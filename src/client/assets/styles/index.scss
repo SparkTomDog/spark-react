@@ -1,0 +1,28 @@
+html, body, #root, #Contriner {
+    height: 100%;
+    width: 100%;
+    padding: 0;
+    margin: 0;
+}
+
+#Contriner {
+    display: flex;
+    flex-direction: column;
+
+    &Header {
+        height: 40px;
+        width: 100%;
+        display: flex;
+        align-items: center;
+    }
+
+    &Main {
+        flex: 1;
+        display: flex;
+        flex-direction: row;
+
+        &EditBox {
+            flex: 1;
+        }
+    }
+}
