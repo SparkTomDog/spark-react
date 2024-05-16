@@ -1,25 +1,24 @@
 import { PrismaClient } from '@prisma/client'
+import { getDate } from './function.js'
 
 export const dataInit = async () => {
     const prisma = new PrismaClient()
     const res = await prisma.dataModel.findMany({
         where: {
-            type: "folder"
+            deleteAt: null
         }
     })
-    if (res.length < 1) {
+    if(res.length === 0) {
         await prisma.dataModel.create({
             data: {
-                label: "未分类",
-                type: "folder",
-                documents: {
-                    create: [
-                        {
-                            label: "测试文档",
-                            type: "file"
-                        }
-                    ]
-                }
+                label: "测试文档",
+                content: JSON.stringify([
+                    {
+                        type: "paragraph",
+                        content: "Welcome to this demo!",
+                    }
+                ]),
+                createAt: getDate()
             }
         })
     }

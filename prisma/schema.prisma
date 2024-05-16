@@ -1,8 +1,10 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
+// yarn prisma migrate dev --name init
 
 generator client {
     provider = "prisma-client-js"
+    previewFeatures = ["fullTextSearch"]
 }
 
 datasource db {
@@ -11,11 +13,10 @@ datasource db {
 }
 
 model DataModel {
-    id        String      @id @default(uuid())
-    label     String      @unique
-    content   String?
-    type      String      @default("folder")
-    parentId  String?
-    parent    DataModel?  @relation("dataFormThis", fields: [parentId], references: [id], onDelete: Restrict, onUpdate: Cascade)
-    documents DataModel[] @relation("dataFormThis")
+    id         String        @id @default(uuid())
+    label      String
+    content    String?
+    createAt   String
+    updateAt   String?
+    deleteAt   String?
 }

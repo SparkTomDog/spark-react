@@ -11,5 +11,12 @@ export default defineConfig({
             "@s": path.resolve(__dirname, "src/server"),
             "@t": path.resolve(__dirname, "src/types"),
         }
+    },
+    css: {
+        preprocessorOptions: {
+            scss: {
+                additionalData: `@import "@c/assets/styles/scssConfig.scss";`
+            }
+        }
     }
 });

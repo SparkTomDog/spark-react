@@ -1,6 +1,7 @@
 import { HttpResponse } from "@s/common/HttpResponse.js"
 import { Request, Response } from "express"
 import { PrismaClient } from '@prisma/client'
+import { getDate } from "@s/common/function.js";
 
 class DataController {
 
@@ -8,100 +9,117 @@ class DataController {
 
     createData = async(req: Request, res: Response) => {
         const data = req.body
+        console.log(data)
         try {
+            data.createAt = getDate()
             const re = await this.prisma.dataModel.create({
                 data
             })
 
-            HttpResponse(res, "创建成功", re)
+            HttpResponse(res, "文档创建成功", re)
         } catch (error) {
+            console.log(error)
             HttpResponse(res, "error", error, 400)
         }
     }
-
-    getTreeData = async(req: Request, res: Response) => {
+    getData = async(req: Request, res: Response) => {
         try {
-            const data = await this.prisma.dataModel.findMany({
+            const list = await this.prisma.dataModel.findMany({
                 where: {
-                    type: "folder"
-                },
-                include: {
-                    documents: true
+                    deleteAt: null
                 }
             })
 
-            HttpResponse(res, "获取成功", data)
+            HttpResponse(res, "获取文档列表成功", list)
         } catch (error) {
             HttpResponse(res, "error", error, 400)
         }
     }
-
-    getCategoryInfo = async(req: Request, res: Response) => {
-        const { id } = req.body
+    getDelData = async(req: Request, res: Response) => {
         try {
-            const data = await this.prisma.dataModel.findFirst({
+            const list = await this.prisma.dataModel.findMany({
                 where: {
-                    type: "folder",
-                    id
-                },
-                include: {
-                    documents: true
+                    deleteAt: {
+                        not: null
+                    }
                 }
             })
 
-            HttpResponse(res, "获取成功", data)
+            HttpResponse(res, "获取文档回收站成功", list)
         } catch (error) {
             HttpResponse(res, "error", error, 400)
         }
     }
-
-    getDataInfo = async(req: Request, res: Response) => {
-        const { id } = req.body
-        try {
-            const data = await this.prisma.dataModel.findFirst({
-                where: {
-                    id
-                },
-                include: {
-                    parent: true
-                }
-            })
-
-            HttpResponse(res, "获取成功", data)
-        } catch (error) {
-            HttpResponse(res, "error", error, 400)
-        }
-    }
-
     updateData = async(req: Request, res: Response) => {
-        const document = req.body
+        const data = req.body
         try {
+            data.updateAt = getDate()
             const re = await this.prisma.dataModel.update({
                 where: {
-                    id: document.id
+                    id: data.id
                 },
-                data: {
-                    label: document.label,
-                    content: document.content
-                }
+                data
             })
 
-            HttpResponse(res, "更新成功", re)
+            HttpResponse(res, "修改成功", re)
         } catch (error) {
             HttpResponse(res, "error", error, 400)
         }
     }
-
     deleteData = async(req: Request, res: Response) => {
         const { id } = req.body
         try {
-            const data = await this.prisma.dataModel.delete({
+            const re = await this.prisma.dataModel.update({
+                where: {
+                    id
+                },
+                data: {
+                    deleteAt: getDate()
+                }
+            })
+
+            HttpResponse(res, "文档删除成功", re)
+        } catch (error) {
+            HttpResponse(res, "error", error, 400)
+        }
+    }
+    removeData = async(req: Request, res: Response) => {
+        const { id } = req.body
+        try {
+            const re = await this.prisma.dataModel.delete({
                 where: {
                     id
                 }
             })
-            HttpResponse(res, "删除成功", data)
+
+            HttpResponse(res, "文档移除成功", re)
         } catch (error) {
+            HttpResponse(res, "error", error, 400)
+        }
+    }
+    searchData = async(req: Request, res: Response) => {
+        const { searchText } = req.body
+        try {
+            const re = await this.prisma.dataModel.findMany({
+                where: {
+                    OR: [
+                        {
+                            label: {
+                                contains: searchText
+                            }
+                        },
+                        {
+                            content: {
+                                contains: searchText
+                            }
+                        }
+                    ]
+                }
+            })
+
+            HttpResponse(res, "搜索成功", re)
+        } catch (error) {
+            console.log(error)
             HttpResponse(res, "error", error, 400)
         }
     }

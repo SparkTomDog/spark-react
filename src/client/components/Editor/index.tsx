@@ -1,63 +1,47 @@
-import { BaseDataType } from "@t/index"
-import "@blocknote/core/fonts/inter.css";
-import { useCreateBlockNote } from "@blocknote/react";
 import { BlockNoteView } from "@blocknote/mantine";
+import "@blocknote/core/fonts/inter.css";
 import "@blocknote/mantine/style.css";
-import "@c/components/Editor/index.scss"
-import { Breadcrumb, Button } from "antd";
-import { HomeOutlined } from "@ant-design/icons";
+import { useEffect, useMemo, useState } from "react";
+import { BaseDataType } from "@t/index";
+import { observer } from "mobx-react-lite";
+import { useBaseStore } from "@c/stores";
+import { BlockNoteEditor, PartialBlock } from "@blocknote/core";
 
-const saveDocument = async (data: BaseDataType) => {
-    localStorage.setItem(data.id as string, JSON.stringify(data))
-}
+const Editor = observer(() => {
 
-function Editor({ currData }: { currData: BaseDataType }) {
+    const { dataStore } = useBaseStore()
+    const [editData, setEditData] = useState<BaseDataType | null>(dataStore.currentData)
+    const [initialContent, setInitialContent] = useState<PartialBlock[] | undefined>([
+        {
+            type: "paragraph",
+            content: "Welcome to this demo!",
+        }
+    ]);
+    const editor = useMemo(() => {
+        return BlockNoteEditor.create({ initialContent });
+    }, [initialContent])
 
-    let data: BaseDataType = currData
+    useEffect(() => {
+        setEditData(dataStore.currentData)
+        setInitialContent(dataStore.currentData!.content)
+    }, [dataStore.currentData])
 
-    const editor = useCreateBlockNote({
-        initialContent: JSON.parse(data.content)
-    });
-
-    const changeLabel = (e: React.ChangeEvent<HTMLInputElement>) => {
-        data.label = e.target.value
-    }
-
-    return (
-        <div id={data.id} className="editor">
-            <div className="editor_header">
-                <div className="editor_header_breadcrumb">
-                    <Breadcrumb
-                        separator=">"
-                        items={[
-                            {
-                                href: '/',
-                                title: <HomeOutlined />,
-                            },
-                            {
-                                title: data.parent.label,
-                            },
-                            {
-                                title: data.label,
-                            },
-                        ]}
-                    />
+    if (editData?.id) {
+        return <div className="editor">
+            <div className="editor_preview">
+                <div className="editor_preview_label">
+                    <input type="text" placeholder="在此键入标题" value={editData?.label} onChange={(e) => dataStore.updateEditDataLabel(e)} />
                 </div>
-                <div className="editor_header_label">
-                    <input placeholder="在此键入标题" defaultValue={data.label} onChange={changeLabel} />
+                <div className="editor_preview_item">
+                    <BlockNoteView editor={editor} onChange={() => {
+                        dataStore.updateEditDataContent(editor.document)
+                    }} />
                 </div>
-            </div>
-            <div className="editor_main">
-                <BlockNoteView
-                    editor={editor}
-                    onChange={() => {
-                        data.content = editor.document
-                        saveDocument(data)
-                    }}
-                />
             </div>
         </div>
-    )
-}
+    } else {
+        <div></div>
+    }
+})
 
 export default Editor

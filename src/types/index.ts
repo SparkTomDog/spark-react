@@ -1,16 +1,11 @@
 interface BaseDataType {
     id?: string
-    label: string
+    label?: string
     content?: any
+    type?: string
     [x: string]: any
 }
 
-interface TabDataType extends BaseDataType {
-    key: string
-    children: any
-}
-
 export type {
-    BaseDataType,
-    TabDataType
+    BaseDataType
 }

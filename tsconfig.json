@@ -23,7 +23,8 @@
             "@c/*": ["src/client/*"],
             "@s/*": ["src/server/*"],
             "@t/*": ["src/types/*"],
-        }
+        },
+        "experimentalDecorators": true
     },
     "include": [
         "src"

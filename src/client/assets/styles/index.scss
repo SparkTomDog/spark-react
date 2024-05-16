@@ -5,24 +5,225 @@ html, body, #root, #Contriner {
     margin: 0;
 }
 
-#Contriner {
+.action_btn {
+    width: 30px;
+    height: 30px;
+    max-height: 30px;
     display: flex;
-    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: $def_transition;
+    margin-right: 5px;
+    border-radius: 5px;
 
-    &Header {
-        height: 40px;
-        width: 100%;
-        display: flex;
-        align-items: center;
+    &:hover {
+        background-color: $def_hover_background_color;
+        color: $def_hover_color;
+    }
+}
+
+.document_list_item {
+    width: 100%;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+
+    &:hover {
+        .document_list_item_remove {
+            display: flex;
+        }
     }
 
-    &Main {
+    &_label {
         flex: 1;
-        display: flex;
-        flex-direction: row;
+    }
 
-        &EditBox {
+    &_remove {
+        display: none;
+        transition: $def_transition;
+    }
+}
+
+#NotEditDocument {
+    width: 100%;
+    height: 100%;
+    position: relative;
+
+    ul {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        width: 50%;
+
+        li {
+            width: 100%;
+            height: 40px;
+            cursor: pointer;
+            box-sizing: border-box;
+
+            &:hover {
+                border: 1px solid #ccc;
+            }
+
+            .label {
+                width: 100%;
+                height: 100%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+        }
+    }
+}
+
+#Contriner {
+    display: flex;
+    flex-direction: row;
+
+    #ContrinerAside {
+        box-sizing: border-box;
+        background-color: $def_aside_background_color;
+        border-right: $def_border;
+        transition: $def_transition;
+        display: block;
+        color: $def_color;
+    }
+
+    #ContrinerMain {
+        flex: 1;
+        height: calc(100% - 42px);
+    }
+}
+
+#DocumentList {
+    width: 100%;
+}
+
+.editor {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+
+    &_preview {
+        width: 60%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        box-sizing: border-box;
+        padding-top: 30px;
+
+        &_label {
+            height: 40px;
+            display: flex;
+            align-items: center;
+
+            input {
+                width: 100%;
+                height: 100%;
+                box-sizing: border-box;
+                border: none;
+                outline: none;
+                font-size: 28px;
+                padding-left: 50px;
+
+                &:focus {
+                    background-color: rgba(250, 235, 215, 0.404);
+                }
+            }
+        }
+
+        &_item {
             flex: 1;
+            box-sizing: border-box;
+            padding: 5px;
+        }
+    }
+}
+
+#ContrinerMain {
+    &Header {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        box-sizing: border-box;
+        height: 40px;
+        display: flex;
+        align-items: center;
+
+        li {
+            display: inline-flex;
+            margin-right: 2px;
+            height: 40px;
+            align-items: center;
+            color: $def_color;
+        }
+
+        .tab {
+            width: 200px;
+            // border: 1px solid #ccc;
+            border-width: 1px;
+            border-color: #ccc;
+            border-top-style: solid;
+            border-left-style: solid;
+            border-right-style: solid;
+            border-bottom-style: solid;
+            border-radius: 8px 8px 0 0;
+
+            .tab_action {
+                transition: all 0.3s;
+                display: none;
+            }
+
+            &:hover {
+                .tab_action {
+                    display: flex;
+                }
+            }
+
+            &_label {
+                flex: 1;
+                box-sizing: border-box;
+                padding: 5px;
+                cursor: pointer;
+            }
+        }
+
+        .tab_focus {
+            border-bottom-style: none;
+        }
+    }
+}
+
+#TrashBox {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+
+    li {
+        height: 40px;
+        display: flex;
+        align-items: center;
+
+        &:hover {
+            .li_reload, .li_remove {
+                display: flex;
+            }
+        }
+
+        .li_label {
+            flex: 1;
+        }
+
+        .li_reload, .li_remove {
+            display: none;
+            transition: $def_transition;
         }
     }
 }
